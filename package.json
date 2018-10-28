@@ -1,0 +1,23 @@
+{
+  "name": "vchat",
+  "version": "1.0.0",
+  "description": "A simple video chat app using WebRTC",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satnam-sandhu/vchat.git"
+  },
+  "author": "Satnam Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/satnam-sandhu/vchat/issues"
+  },
+  "homepage": "https://github.com/satnam-sandhu/vchat#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.1.1"
+  }
+}
