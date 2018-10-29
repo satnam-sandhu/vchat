@@ -14,28 +14,37 @@
 <body ng-controller="user-list">
   <div class="row no-gutters">
     <div class="col-lg-5">
-      <h4>Active Users</h4>
-      <button class="btn btn-md" ng-click="makeActive()" ng-if="!isActive">Become Active</button>
-      <!-- <ul class="m-2" ng-if="isActive">
-        <li>{{user_name}} (YOU) &nbsp;<i class="fa fa-pencil" aria-hidden="true"></i></li>
-        <li id="{{streamer.id}}-contact" ng-repeat="streamer in users" ng-if="streamer.id!==myId">{{streamer.name}}&nbsp;
-          <button id="{{streamer.id}}-call" ng-click="call(streamer.id)" class="btn btn-sm">
-            Call</button>
-        </li>
-      </ul> -->
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="sidebar">
+            <ul class="upper-menu">
+              <li><i class="fa fa-home" aria-hidden="true"></i></li>
+              <li><i class="fa fa-address-book-o" aria-hidden="true"></i></li>
+              <li><i class="fa fa-home" aria-hidden="true"></i></li>
+              <li><i class="fa fa-home" aria-hidden="true"></i></li>
+            </ul>
+            <ul class="lower-menu">
+              <li><i class="fa fa-user" aria-hidden="true"></i></li>
+              <li><i class="fa fa-cog" aria-hidden="true"></i></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-10">
+          <h2>{{user_name}}</h2>
+          <h6>
+            <em>
+              {{isActive?'Online':'Offline'}}
+              <i class="fa fa-circle" ng-if="!isActive" style="color:red; font-size: 10px;" aria-hidden="true"></i>
+              <i class="fa fa-circle" ng-if="isActive" style="color:green; font-size: 10px;" aria-hidden="true"></i>
+            </em>&nbsp;&nbsp;
+            <a href="#" ng-if="!isActive" ng-click="makeActive()">Go online</a>
+          </h6>
+        </div>
+      </div>
     </div>
     <div class="col-lg-5">
       <div class="row no-gutters">
         <div class="col-lg-6 screen">
-          <!-- <div id="{{myId}}-controlls" class="btn-group call-controlls" role="group" aria-label="Basic example">
-            <button id="{{streamer.id}}-call" ng-click="call(streamer.id)" class="btn btn-success">
-              <i class="fa fa-phone" aria-hidden="true"></i>&nbsp;&nbsp;Call</button>
-            <button id="{{streamer.id}}-hang" type="button" class="end-call btn btn-danger end-call"><i class="fa fa-phone hangup"
-                aria-hidden="true"></i>&nbsp;&nbsp;End</button>
-            <button type="button" class="btn btn-light"><i class="fa fa-microphone" aria-hidden="true"></i></button>
-            <button type="button" class="btn btn-light"><i class="fa fa-user" aria-hidden="true"></i></button>
-            <button type="button" class="btn btn-light"><i class="fa fa-expand" aria-hidden="true"></i></button>
-          </div> -->
           <video id="{{myId}}-output" muted="muted"></video>
           <div class="overlay">
             <i class="fa fa-circle" ng-if="!isActive" style="color:red; font-size: 10px;" aria-hidden="true"></i>
@@ -54,7 +63,10 @@
             <button type="button" class="btn btn-light"><i class="fa fa-expand" aria-hidden="true"></i></button>
           </div>
           <video id="{{streamer.id}}-output"></video>
-          <div class="overlay">{{streamer.name}}</div>
+          <div class="overlay">
+            <i class="fa fa-circle" style="color:green; font-size: 10px;" aria-hidden="true"></i>
+            {{streamer.name}}
+          </div>
         </div>
       </div>
     </div>
