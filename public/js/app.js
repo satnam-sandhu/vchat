@@ -30,17 +30,26 @@ app.controller('user-list', ['$scope', 'socket', ($scope, socket) => {
   $scope.peer;
   $scope.isCameraOn = false;
   $scope.isActive = false;
-  let STREAM;
+  $scope.isRejected = false;
 
-  socket.on('id', id => {
-    $scope.myId = id;
-  });
+  let STREAM;
+  if (!localStorage.getItem('user_name')) $('#user_name_modal').modal('show');
+  $scope.user_name = localStorage.getItem('user_name');
+
+  $scope.setUserName = () => localStorage.setItem('user_name', $scope.user_name);
+
+  if (!localStorage.getItem('id')) localStorage.setItem('id', Math.trunc(Math.random() * 10000000000));
+  $scope.myId = localStorage.getItem('id');
 
   socket.on('new:user', data => {
     $scope.users = data;
   });
 
-  socket.on('message', async ({ from, type, payload}) => {
+  socket.on('message', async ({
+    from,
+    type,
+    payload
+  }) => {
     switch (type) {
       case 'offer':
         addPeer(from);
@@ -55,10 +64,18 @@ app.controller('user-list', ['$scope', 'socket', ($scope, socket) => {
     }
   });
 
+  socket.on('reject', () => {
+    $scope.isRejected = true;
+  });
+
   $scope.makeActive = () => {
-    socket.emit('active:now');
+    socket.emit('active:now', {
+      id: localStorage.getItem('id'),
+      name: $scope.user_name
+    });
     $scope.isActive = true;
   };
+
   $scope.call = async id => {
     addPeer(id);
     if (!$scope.isCameraOn) await $scope.turnOnCamera();
@@ -70,8 +87,7 @@ app.controller('user-list', ['$scope', 'socket', ($scope, socket) => {
       navigator.webkitGetUserMedia({
           video: true,
           audio: true
-        },
-        stream => {
+        }, stream => {
           stream.getTracks().forEach(track => $scope.peer.addTrack(track, stream));
           $scope.isCameraOn = true;
           STREAM = stream;
