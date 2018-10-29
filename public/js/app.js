@@ -28,38 +28,33 @@ app.controller("user-list", [
   ($scope, socket) => {
     $scope.users = [];
     $scope.title = "VChat";
-    $scope.myId;
-    $scope.to;
-    $scope.isCameraOn = false;
-    $scope.isActive = false;
-    $scope.isRejected = false;
+    $scope.activecalls = {
+      "6485359087": true
+    };
 
     let STREAM;
     let peerDatabase = {};
+    let mediaStream = {
+      video: true,
+      audio: true
+    };
 
     $scope.turnOnCamera = async () => {
       return new Promise((resolve, reject) => {
         navigator.webkitGetUserMedia(
-          {
-            video: true,
-            audio: true
-          },
+          mediaStream,
           stream => {
             $scope.isCameraOn = true;
             STREAM = stream;
-            let self = $("#" + $scope.myId)[0];
+            let self = $("#" + $scope.myId + "-output")[0];
             self.srcObject = STREAM;
             self.play();
-            resolve({
-              error: null
-            });
+            resolve();
             return;
           },
           err => {
-            reject({
-              error: err
-            });
-            return;
+            console.error(err);
+            reject();
           }
         );
       });
@@ -76,7 +71,7 @@ app.controller("user-list", [
     $scope.myId = localStorage.getItem("id");
 
     socket.on("new:user", data => {
-      $scope.users = data;
+      if ($scope.isActive) $scope.users = data;
     });
 
     socket.on("message", async ({ from, type, payload }) => {
@@ -89,6 +84,8 @@ app.controller("user-list", [
           await peer.setRemoteDescription(payload);
           break;
         case "candidate":
+          $("#" + from + "-call").remove();
+          $("#" + from + "-hang").show();
           if (peer.remoteDescription) peer.addIceCandidate(payload);
           break;
       }
@@ -109,6 +106,7 @@ app.controller("user-list", [
 
     $scope.call = async id => {
       let peer = peerDatabase[id] || (await addPeer(id));
+      $("#" + id + "-call").attr("disabled", true);
       offer(peer, id);
     };
 
@@ -117,7 +115,7 @@ app.controller("user-list", [
       if (!$scope.isCameraOn) await $scope.turnOnCamera();
       STREAM.getTracks().forEach(track => peer.addTrack(track, STREAM));
       peer.onaddstream = event => {
-        let remoteVideo = $("#" + id)[0];
+        let remoteVideo = $("#" + id + "-output")[0];
         remoteVideo.srcObject = event.stream;
         remoteVideo.play();
       };
@@ -134,7 +132,6 @@ app.controller("user-list", [
     };
 
     let offer = async (peer, to) => {
-      console.log(peer);
       peer.setLocalDescription(await peer.createOffer());
       send(to, "offer", peer.localDescription);
     };
@@ -142,6 +139,7 @@ app.controller("user-list", [
     let answer = async (peer, to, description) => {
       await peer.setRemoteDescription(description);
       await peer.setLocalDescription(await peer.createAnswer());
+      $("#" + to + "-call").attr("disabled", true);
       send(to, "answer", peer.localDescription);
     };
 

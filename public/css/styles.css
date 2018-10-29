@@ -1,5 +1,48 @@
 video {
   height: 100%;
   width: 100%;
-  border: 1px solid #ccc!important;
+  position: relative;
+}
+
+.call-controlls {
+  position: absolute;
+  margin: 10px;
+  z-index: 1;
+}
+.call-controlls > button {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.screen {
+  background-color: black;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.5); /* Black see-through */
+  color: #f1f1f1;
+  width: 100%;
+  transition: 0.5s ease;
+  opacity: 0;
+  color: white;
+  font-size: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.screen:hover .overlay {
+  opacity: 1;
+}
+
+.hangup {
+  -ms-transform: rotate(135deg); /* IE 9 */
+  -webkit-transform: rotate(135deg); /* Safari 3-8 */
+  transform: rotate(135deg);
+}
+
+.end-call {
+  display: none;
 }
