@@ -36,7 +36,7 @@
             <button type="button" class="btn btn-light"><i class="fa fa-user" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-light"><i class="fa fa-expand" aria-hidden="true"></i></button>
           </div> -->
-          <video id="{{myId}}-output"></video>
+          <video id="{{myId}}-output" muted="muted"></video>
           <div class="overlay">
             <i class="fa fa-circle" ng-if="!isActive" style="color:red; font-size: 10px;" aria-hidden="true"></i>
             <i class="fa fa-circle" ng-if="isActive" style="color:green; font-size: 10px;" aria-hidden="true"></i>
@@ -47,8 +47,8 @@
           <div id="{{streamer.id}}-controlls" class="btn-group call-controlls" role="group" aria-label="Basic example">
             <button id="{{streamer.id}}-call" ng-click="call(streamer.id)" class="btn btn-success">
               <i class="fa fa-phone" aria-hidden="true"></i>&nbsp;&nbsp;Call</button>
-            <button id="{{streamer.id}}-hang" type="button" class="end-call btn btn-danger end-call"><i class="fa fa-phone hangup"
-                aria-hidden="true"></i>&nbsp;&nbsp;End</button>
+            <button id="{{streamer.id}}-hang" ng-click="endCall(streamer.id)" type="button" class="end-call btn btn-danger end-call"><i
+                class="fa fa-phone hangup" aria-hidden="true"></i>&nbsp;&nbsp;End</button>
             <button type="button" class="btn btn-light"><i class="fa fa-microphone" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-light"><i class="fa fa-user" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-light"><i class="fa fa-expand" aria-hidden="true"></i></button>

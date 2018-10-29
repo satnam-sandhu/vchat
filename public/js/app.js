@@ -28,9 +28,6 @@ app.controller("user-list", [
   ($scope, socket) => {
     $scope.users = [];
     $scope.title = "VChat";
-    $scope.activecalls = {
-      "6485359087": true
-    };
 
     let STREAM;
     let peerDatabase = {};
@@ -81,11 +78,11 @@ app.controller("user-list", [
           answer(peer, from, payload);
           break;
         case "answer":
+          $("#" + from + "-call").hide();
+          $("#" + from + "-hang").show();
           await peer.setRemoteDescription(payload);
           break;
         case "candidate":
-          $("#" + from + "-call").remove();
-          $("#" + from + "-hang").show();
           if (peer.remoteDescription) peer.addIceCandidate(payload);
           break;
       }
@@ -106,8 +103,14 @@ app.controller("user-list", [
 
     $scope.call = async id => {
       let peer = peerDatabase[id] || (await addPeer(id));
-      $("#" + id + "-call").attr("disabled", true);
       offer(peer, id);
+    };
+
+    $scope.endCall = async id => {
+      peerDatabase[id].close();
+      delete peerDatabase[id];
+      $("#" + id + "-call").show();
+      $("#" + id + "-hang").hide();
     };
 
     let addPeer = async id => {
@@ -124,7 +127,10 @@ app.controller("user-list", [
       };
       peer.oniceconnectionstatechange = event => {
         if (peer.iceConnectionState == "disconnected") {
-          console.log("Disconnected");
+          peerDatabase[id].close();
+          delete peerDatabase[id];
+          $("#" + id + "-call").show();
+          $("#" + id + "-hang").hide();
         }
       };
       peerDatabase[id] = peer;
@@ -137,9 +143,10 @@ app.controller("user-list", [
     };
 
     let answer = async (peer, to, description) => {
+      $("#" + to + "-call").hide();
+      $("#" + to + "-hang").show();
       await peer.setRemoteDescription(description);
       await peer.setLocalDescription(await peer.createAnswer());
-      $("#" + to + "-call").attr("disabled", true);
       send(to, "answer", peer.localDescription);
     };
 
