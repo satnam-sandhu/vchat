@@ -40,11 +40,35 @@
             <a href="#" ng-if="!isActive" ng-click="makeActive()">Go online</a>
           </h6>
           <br>
-          <div class="friend-list">
-            <h3>Active Friends</h3>
-            <div class="friend" ng-if="streamer.id !== myId" ng-repeat="streamer in users">
+          <div ng-if="!showChat" class="friend-list">
+            <h3 class="box-header">Active Friends</h3>
+            <div ng-click="chat(streamer)" class="friend" ng-if="streamer.id !== myId" ng-repeat="streamer in users">
               <img class="avatar" src="{{generateAvatar(streamer.name, 40, 40)}}" width="40" height="40" alt="{{streamer.name}}">
               <span>{{streamer.name}}</span>
+            </div>
+          </div>
+          <div ng-if="showChat" class="friend-list">
+            <h3 ng-click="goBack()" class="chat-window-header box-header">{{activeUser.name}}
+              <div class="pull-right back">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <i>Go Back</i>
+              </div>
+            </h3>
+            <div class="chat-box">
+              <div class="text-area">
+                <div ng-repeat="chat in activeUser.chat track by $index">
+                  <div ng-if="chat.type=='sent'" class="sent text">
+                    {{chat.text}}
+                  </div>
+                  <div ng-if="chat.type=='rcv'" class="rcv text">
+                    {{chat.text}}
+                  </div>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <input type="text" class="chat-input" ng-model="text" ng-model="text">
+                <button ng-click="send()" class="btn btn-success send"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+              </div>
             </div>
           </div>
         </div>

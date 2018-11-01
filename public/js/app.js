@@ -24,10 +24,24 @@ app.factory("socket", $rootScope => {
 
 app.controller("user-list", [
   "$scope",
+  "$rootScope",
   "socket",
-  ($scope, socket) => {
+  ($scope, $rootScope, socket) => {
     $scope.users = [];
     $scope.title = "VChat";
+    $scope.text;
+    $scope.activeUser = {
+      id: "",
+      name: "",
+      get firstName() {
+        let name = this.name.split(" ");
+        return name[0];
+      },
+      get lastname() {
+        let name = this.name.split(" ");
+        return name[name.length - 1];
+      }
+    };
 
     let colours = [
       "#1abc9c",
@@ -54,6 +68,7 @@ app.controller("user-list", [
 
     let STREAM;
     let peerDatabase = {};
+    let chatDatabase = {};
     let mediaStream = {
       video: true,
       audio: true
@@ -135,6 +150,10 @@ app.controller("user-list", [
         case "candidate":
           if (peer.remoteDescription) peer.addIceCandidate(payload);
           break;
+        case "text":
+          updateChatLog(from, "rcv", payload);
+          $rootScope.$digest();
+          break;
       }
     });
 
@@ -161,6 +180,43 @@ app.controller("user-list", [
       delete peerDatabase[id];
       $("#" + id + "-call").show();
       $("#" + id + "-hang").hide();
+      let remoteVideo = $("#" + id + "-output")[0];
+      remoteVideo.srcObject = null;
+      remoteVideo.load();
+    };
+
+    $(document).on("keyup", ".chat-input", function(evt) {
+      if (evt.keyCode == 13) {
+        $scope.text = event.preventDefault();
+        $scope.send();
+      }
+      evt.preventDefault();
+    });
+
+    $scope.chat = ({ name, id }) => {
+      $scope.activeUser.name = name;
+      $scope.activeUser.id = id;
+      $scope.showChat = true;
+      $scope.activeUser.chat = JSON.parse(
+        JSON.stringify(chatDatabase[id] || [])
+      );
+    };
+
+    $scope.send = () => {
+      $scope.text = $(".chat-input")[0].value;
+      let timestamp = new Date();
+      if ($scope.text) {
+        updateChatLog($scope.activeUser.id, "sent", {
+          timestamp,
+          text: $scope.text
+        });
+        send($scope.activeUser.id, "text", { timestamp, text: $scope.text });
+      }
+    };
+
+    $scope.goBack = () => {
+      chatDatabase[$scope.activeUser.id] = $scope.activeUser.chat;
+      $scope.showChat = false;
     };
 
     let addPeer = async id => {
@@ -181,6 +237,9 @@ app.controller("user-list", [
           delete peerDatabase[id];
           $("#" + id + "-call").show();
           $("#" + id + "-hang").hide();
+          let remoteVideo = $("#" + id + "-output")[0];
+          remoteVideo.srcObject = null;
+          remoteVideo.load();
         }
       };
       peerDatabase[id] = peer;
@@ -206,7 +265,19 @@ app.controller("user-list", [
         type: type,
         payload: payload
       });
+      if (type == "text") {
+        $(".chat-input")[0].value = "";
+        $rootScope.$digest();
+      }
     };
+
+    let updateChatLog = (id, type, { timestamp, text }) => {
+      let data = { type, timestamp, text };
+      if (!chatDatabase[id]) chatDatabase[id] = [];
+      chatDatabase[id].push(data);
+      if ($scope.activeUser.id == id) $scope.activeUser.chat.push(data);
+    };
+
     $scope.turnOnCamera();
   }
 ]);

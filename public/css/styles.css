@@ -86,8 +86,21 @@ video {
   margin-right: 50px;
 }
 
-.friend-list > h3 {
+.box-header {
   border-bottom: lightgray solid 1px;
+  padding: 15px;
+}
+
+.box-header > .back {
+  font-size: 15px;
+}
+
+.chat-window-header {
+  border-radius: 5px;
+}
+.chat-window-header:hover {
+  background-color: #cfd6e0;
+  cursor: pointer;
 }
 
 .friend {
@@ -102,4 +115,50 @@ video {
 
 .avatar {
   border-radius: 50%;
+}
+
+.chat-box {
+  padding: 10px;
+  height: 470px;
+  width: 100%;
+  background-color: #cfd6e0;
+  border-radius: 5px;
+}
+
+.text-area {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  width: 85%;
+  height: calc(2.25rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.chat-controls {
+  width: 83%;
+  bottom: 30px;
+  position: absolute;
+}
+
+.text {
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+.sent {
+  background-color: rgb(106, 106, 255);
+}
+.rcv {
+  background-color: gray;
 }
