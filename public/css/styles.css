@@ -81,3 +81,25 @@ video {
 .lower-menu {
   bottom: 0;
 }
+
+.friend-list {
+  margin-right: 50px;
+}
+
+.friend-list > h3 {
+  border-bottom: lightgray solid 1px;
+}
+
+.friend {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.friend:hover {
+  background-color: #cfd6e0;
+  cursor: pointer;
+}
+
+.avatar {
+  border-radius: 50%;
+}

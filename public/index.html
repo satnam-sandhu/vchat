@@ -39,6 +39,14 @@
             </em>&nbsp;&nbsp;
             <a href="#" ng-if="!isActive" ng-click="makeActive()">Go online</a>
           </h6>
+          <br>
+          <div class="friend-list">
+            <h3>Active Friends</h3>
+            <div class="friend" ng-if="streamer.id !== myId" ng-repeat="streamer in users">
+              <img class="avatar" src="{{generateAvatar(streamer.name, 40, 40)}}" width="40" height="40" alt="{{streamer.name}}">
+              <span>{{streamer.name}}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -62,7 +70,7 @@
             <button type="button" class="btn btn-light"><i class="fa fa-user" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-light"><i class="fa fa-expand" aria-hidden="true"></i></button>
           </div>
-          <video id="{{streamer.id}}-output"></video>
+          <video id="{{streamer.id}}-output" poster="{{generateAvatar(streamer.name, 3*40, 4*40)}}"></video>
           <div class="overlay">
             <i class="fa fa-circle" style="color:green; font-size: 10px;" aria-hidden="true"></i>
             {{streamer.name}}

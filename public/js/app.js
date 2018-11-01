@@ -29,6 +29,29 @@ app.controller("user-list", [
     $scope.users = [];
     $scope.title = "VChat";
 
+    let colours = [
+      "#1abc9c",
+      "#2ecc71",
+      "#3498db",
+      "#9b59b6",
+      "#34495e",
+      "#16a085",
+      "#27ae60",
+      "#2980b9",
+      "#8e44ad",
+      "#2c3e50",
+      "#f1c40f",
+      "#e67e22",
+      "#e74c3c",
+      "#ecf0f1",
+      "#95a5a6",
+      "#f39c12",
+      "#d35400",
+      "#c0392b",
+      "#bdc3c7",
+      "#7f8c8d"
+    ];
+
     let STREAM;
     let peerDatabase = {};
     let mediaStream = {
@@ -55,6 +78,33 @@ app.controller("user-list", [
           }
         );
       });
+    };
+
+    $scope.generateAvatar = (name, h, w) => {
+      name = name.trim();
+      let nameSplit = String(name)
+        .toUpperCase()
+        .split(" ");
+      if (nameSplit.length == 1)
+        initials = nameSplit[0] ? nameSplit[0].charAt(0) : "?";
+      else initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
+      let charIndex = (initials == "?" ? 72 : initials.charCodeAt(0)) - 64;
+      let colourIndex = charIndex % 20;
+      let canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      context = canvas.getContext("2d");
+      context.fillStyle = colours[colourIndex - 1];
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.font = Math.round(canvas.width / 2) + "px Arial";
+      context.textAlign = "center";
+      context.fillStyle = "#FFF";
+      context.fillText(initials, w / 2, w / 1.5);
+
+      dataURI = canvas.toDataURL();
+      canvas = null;
+
+      return dataURI;
     };
 
     if (!localStorage.getItem("user_name")) $("#user_name_modal").modal("show");
