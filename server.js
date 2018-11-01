@@ -37,6 +37,7 @@ io.on('connection', socket => {
   });
 
   socket.on('message', data => {
+    if (!users[data.to]) return;
     let remote = io.sockets.connected[users[data.to].session_id];
     if (!remote) return;
     delete data.to;
